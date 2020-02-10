@@ -69,6 +69,14 @@ public class HadoopKnowsGenerator {
     private List<Float> percentages;
     private int step_index;
 
+    public HadoopKnowsGenerator(Configuration conf, String preKeySetterName, String postKeySetterName, List<Float> percentages, int step_index, String knowsGeneratorName) {
+        this.conf = new Configuration(conf);
+        this.preKeySetterName = preKeySetterName;
+        this.postKeySetterName = postKeySetterName;
+        this.percentages = percentages;
+        this.step_index = step_index;
+        this.knowsGeneratorName = knowsGeneratorName;
+    }
 
     public static class HadoopKnowsGeneratorReducer extends Reducer<BlockKey, Person, TupleKey, Person> {
 
@@ -130,14 +138,6 @@ public class HadoopKnowsGenerator {
     }
 
 
-    public HadoopKnowsGenerator(Configuration conf, String preKeySetterName, String postKeySetterName, List<Float> percentages, int step_index, String knowsGeneratorName) {
-        this.conf = new Configuration(conf);
-        this.preKeySetterName = preKeySetterName;
-        this.postKeySetterName = postKeySetterName;
-        this.percentages = percentages;
-        this.step_index = step_index;
-        this.knowsGeneratorName = knowsGeneratorName;
-    }
 
     public void run(String inputFileName, String outputFileName) throws Exception {
         FileSystem fs = FileSystem.get(conf);

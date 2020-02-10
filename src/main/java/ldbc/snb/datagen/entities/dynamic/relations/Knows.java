@@ -51,31 +51,31 @@ import java.util.Random;
 public class Knows implements Writable, Comparable<Knows> {
 
     private long creationDate_;
-    private Person.PersonSummary to_ = null;
+    private Person to_ = null;
     private float weight_ = 0.0f;
     public static int num = 0;
 
     public Knows() {
-        to_ = new Person.PersonSummary();
+        to_ = new Person();
     }
 
     public Knows(Knows k) {
-        to_ = new Person.PersonSummary(k.to());
+        to_ = new Person(k.to());
         creationDate_ = k.creationDate();
         weight_ = k.weight();
     }
 
     public Knows(Person to, long creationDate, float weight) {
-        to_ = new Person.PersonSummary(to);
+        to_ = new Person(to);
         creationDate_ = creationDate;
         weight_ = weight;
     }
 
-    public Person.PersonSummary to() {
+    public Person to() {
         return to_;
     }
 
-    public void to(Person.PersonSummary to) {
+    public void to(Person to) {
         to_.copy(to);
     }
 

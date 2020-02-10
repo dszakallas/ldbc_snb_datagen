@@ -37,6 +37,7 @@ package ldbc.snb.datagen.generator.generators;
 
 import ldbc.snb.datagen.DatagenParams;
 import ldbc.snb.datagen.dictionary.Dictionaries;
+import ldbc.snb.datagen.entities.dynamic.person.IP;
 import ldbc.snb.datagen.entities.dynamic.person.Person;
 import ldbc.snb.datagen.generator.distribution.DegreeDistribution;
 import ldbc.snb.datagen.generator.tools.PowerDistribution;
@@ -47,6 +48,7 @@ import org.apache.hadoop.conf.Configuration;
 import java.text.Normalizer;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TreeSet;
 
 public class PersonGenerator {
 
@@ -83,47 +85,53 @@ public class PersonGenerator {
 
     private Person generateUser() {
 
-        long creationDate = Dictionaries.dates.randomPersonCreationDate(randomFarm
-                                                                                .get(RandomGeneratorFarm.Aspect.DATE));
+        // generate parameters
+        long creationDate = Dictionaries.dates.randomPersonCreationDate(randomFarm.get(RandomGeneratorFarm.Aspect.DATE));
         int countryId = Dictionaries.places.getCountryForUser(randomFarm.get(RandomGeneratorFarm.Aspect.COUNTRY));
+        long birthday = Dictionaries.dates.getBirthDay(randomFarm.get(RandomGeneratorFarm.Aspect.BIRTH_DAY), creationDate);
+        byte gender = (randomFarm.get(RandomGeneratorFarm.Aspect.GENDER).nextDouble() > 0.5) ? (byte) 1 : (byte) 0;
+        int randomBrowserId = Dictionaries.browsers.getRandomBrowserId(randomFarm.get(RandomGeneratorFarm.Aspect.BROWSER));
+        int cityId = Dictionaries.places.getRandomCity(randomFarm.get(RandomGeneratorFarm.Aspect.CITY), countryId);
+        IP ip = Dictionaries.ips.getIP(randomFarm.get(RandomGeneratorFarm.Aspect.IP), countryId);
+        long maxKnows = Math.min(degreeDistribution_.nextDegree(), DatagenParams.numPersons);
+        long deletionDate = Dictionaries.dates.randomPersonDeletionDate(randomFarm.get(RandomGeneratorFarm.Aspect.DELETION_DATE), creationDate, maxKnows);
+        String firstName = Dictionaries.names.getRandomGivenName(randomFarm.get(RandomGeneratorFarm.Aspect.NAME),
+                countryId,
+                gender == 1,
+                Dictionaries.dates.getBirthYear(birthday));
+        String lastName = Dictionaries.names.getRandomSurname(randomFarm.get(RandomGeneratorFarm.Aspect.SURNAME), countryId);
+        int randomId = randomFarm.get(RandomGeneratorFarm.Aspect.RANDOM).nextInt(Integer.MAX_VALUE) % 100;
+        long accountId = composeUserId(nextId++, creationDate);
+        int mainInterest = Dictionaries.tags.getaTagByCountry(randomFarm
+                .get(RandomGeneratorFarm.Aspect.TAG_OTHER_COUNTRY), randomFarm
+                .get(RandomGeneratorFarm.Aspect.TAG), countryId);
+        int universityLocationId = Dictionaries.universities.getRandomUniversity(randomFarm, countryId);
+
+        short numTags = ((short) randomTagPowerLaw.getValue(randomFarm.get(RandomGeneratorFarm.Aspect.NUM_TAG)));
+        TreeSet<Integer> interests = Dictionaries.tagMatrix
+                .getSetofTags(randomFarm.get(RandomGeneratorFarm.Aspect.TOPIC), randomFarm
+                        .get(RandomGeneratorFarm.Aspect.TAG_OTHER_COUNTRY), mainInterest, numTags);
+
         Person person = new Person();
         person.creationDate(creationDate);
-
-        person.gender((randomFarm.get(RandomGeneratorFarm.Aspect.GENDER).nextDouble() > 0.5) ? (byte) 1 : (byte) 0);
-        person.birthday(Dictionaries.dates
-                                .getBirthDay(randomFarm.get(RandomGeneratorFarm.Aspect.BIRTH_DAY), creationDate));
-        person.browserId(Dictionaries.browsers.getRandomBrowserId(randomFarm.get(RandomGeneratorFarm.Aspect.BROWSER)));
         person.countryId(countryId);
-        person.cityId(Dictionaries.places.getRandomCity(randomFarm.get(RandomGeneratorFarm.Aspect.CITY), countryId));
-        person.ipAddress(Dictionaries.ips.getIP(randomFarm.get(RandomGeneratorFarm.Aspect.IP), countryId));
-        person.maxNumKnows(Math.min(degreeDistribution_.nextDegree(), DatagenParams.numPersons));
-
-        long deletionDate = Dictionaries.dates.randomPersonDeletionDate(randomFarm
-                .get(RandomGeneratorFarm.Aspect.DELETION_DATE), creationDate, person.maxNumKnows());
+        person.birthday(birthday);
+        person.gender(gender);
+        person.browserId(randomBrowserId);
+        person.cityId(cityId);
+        person.ipAddress(ip);
+        person.maxNumKnows(maxKnows);
         person.deletionDate(deletionDate);
+        person.firstName(firstName);
+        person.lastName(lastName);
+        person.randomId(randomId);
+        person.accountId(accountId);
+        person.mainInterest(mainInterest);
+        person.universityLocationId(universityLocationId);
+        person.interests(interests);
 
 
-        person.accountId(composeUserId(nextId++, creationDate));
-        person.mainInterest(Dictionaries.tags.getaTagByCountry(randomFarm
-                                                                       .get(RandomGeneratorFarm.Aspect.TAG_OTHER_COUNTRY), randomFarm
-                                                                       .get(RandomGeneratorFarm.Aspect.TAG), person
-                                                                       .countryId()));
-        short numTags = ((short) randomTagPowerLaw.getValue(randomFarm.get(RandomGeneratorFarm.Aspect.NUM_TAG)));
-        person.interests(Dictionaries.tagMatrix
-                                 .getSetofTags(randomFarm.get(RandomGeneratorFarm.Aspect.TOPIC), randomFarm
-                                         .get(RandomGeneratorFarm.Aspect.TAG_OTHER_COUNTRY), person
-                                                       .mainInterest(), numTags));
-        person.universityLocationId(Dictionaries.universities.getRandomUniversity(randomFarm, person.countryId()));
-        person.randomId(randomFarm.get(RandomGeneratorFarm.Aspect.RANDOM).nextInt(Integer.MAX_VALUE) % 100);
-
-        person.firstName(Dictionaries.names.getRandomGivenName(randomFarm.get(RandomGeneratorFarm.Aspect.NAME),
-                                                               person.countryId(),
-                                                               person.gender() == 1,
-                                                               Dictionaries.dates.getBirthYear(person.birthday())));
-
-        person.lastName(Dictionaries.names.getRandomSurname(randomFarm.get(RandomGeneratorFarm.Aspect.SURNAME), person
-                .countryId()));
-
+        // set emails
         int numEmails = randomFarm.get(RandomGeneratorFarm.Aspect.EXTRA_INFO).nextInt(DatagenParams.maxEmails) + 1;
         double prob = randomFarm.get(RandomGeneratorFarm.Aspect.EXTRA_INFO).nextDouble();
         String base = person.firstName();
@@ -163,6 +171,7 @@ public class PersonGenerator {
             }
         }
 
+        // set languages
         List<Integer> userLanguages = Dictionaries.languages.getLanguages(randomFarm
                                                                                        .get(RandomGeneratorFarm.Aspect.LANGUAGE),
                                                                                person.countryId());
@@ -188,6 +197,8 @@ public class PersonGenerator {
         randomFarm.resetRandomGenerators((long) blockId);
     }
 
+
+    // how big is one person? e.g. does it fit into 128MB (hadoop input split)
     /**
      * Generates a block of persons
      *

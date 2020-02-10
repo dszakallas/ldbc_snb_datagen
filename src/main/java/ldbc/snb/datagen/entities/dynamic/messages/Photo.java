@@ -36,7 +36,7 @@
 package ldbc.snb.datagen.entities.dynamic.messages;
 
 import ldbc.snb.datagen.entities.dynamic.person.IP;
-import ldbc.snb.datagen.entities.dynamic.person.Person.PersonSummary;
+import ldbc.snb.datagen.entities.dynamic.person.Person;
 
 import java.util.TreeSet;
 
@@ -48,7 +48,7 @@ public class Photo extends Message {
 
     public Photo(long messageId,
                  long creationDate,
-                 PersonSummary author,
+                 Person author,
                  long forumId,
                  String content,
                  TreeSet<Integer> tags,
@@ -63,7 +63,7 @@ public class Photo extends Message {
 
     public void initialize(long messageId,
                            long creationDate,
-                           PersonSummary author,
+                           Person author,
                            long forumId,
                            String content,
                            TreeSet<Integer> tags,

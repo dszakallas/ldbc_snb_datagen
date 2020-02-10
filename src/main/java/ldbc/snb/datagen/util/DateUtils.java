@@ -152,9 +152,14 @@ public class DateUtils {
         return (year - startYear) * 12 + month - startMonth;
     }
 
+    // knows edge can be created from max(p1,p2)+delta < min(p1,p2)
+    // was set to 30 days, now added catch if person leaves before then
     public long randomKnowsCreationDate(Random random, Person personA, Person personB) {
         long fromDate = Math.max(personA.creationDate(), personB.creationDate()) + DatagenParams.deltaTime;
-        return randomDate(random, fromDate, fromDate + THIRTY_DAYS);
+        long toDate = Math.min(personA.deletionDate(),personB.deletionDate());
+        long maxDate = Math.min(fromDate + THIRTY_DAYS, toDate);
+        return randomDate(random, fromDate, maxDate);
+//        return randomDate(random, fromDate, fromDate + THIRTY_DAYS);
     }
 
     public long numberOfMonths(Person user) {

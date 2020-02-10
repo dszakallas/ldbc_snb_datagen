@@ -64,6 +64,6 @@ public abstract class TextGenerator {
     /**
      * @brief Generates a text given a set of tags.
      */
-    public abstract String generateText(Person.PersonSummary person, TreeSet<Integer> tags, Properties prop);
+    public abstract String generateText(Person person, TreeSet<Integer> tags, Properties prop);
 
 }

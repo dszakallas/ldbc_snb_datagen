@@ -45,7 +45,7 @@ import java.util.List;
 public class Forum {
 
     private long id_;
-    private Person.PersonSummary moderator_;
+    private Person moderator_;
     private long creationDate_;
     private String title_;
     private List<Integer> tags_;
@@ -54,7 +54,7 @@ public class Forum {
     private List<ForumMembership> memberships_;
 
 
-    public Forum(long id, long creationDate, Person.PersonSummary moderator, String title, int placeId, int language) {
+    public Forum(long id, long creationDate, Person moderator, String title, int placeId, int language) {
         assert (moderator
                 .creationDate() + DatagenParams.deltaTime) <= creationDate : "Moderator creation date is larger than message creation date";
         memberships_ = new ArrayList<>();
@@ -63,7 +63,7 @@ public class Forum {
         creationDate_ = creationDate;
         title_ = title;
         placeId_ = placeId;
-        moderator_ = new Person.PersonSummary(moderator);
+        moderator_ = new Person(moderator);
         language_ = language;
     }
 
@@ -79,7 +79,7 @@ public class Forum {
         id_ = id;
     }
 
-    public Person.PersonSummary moderator() {
+    public Person moderator() {
         return moderator_;
     }
 

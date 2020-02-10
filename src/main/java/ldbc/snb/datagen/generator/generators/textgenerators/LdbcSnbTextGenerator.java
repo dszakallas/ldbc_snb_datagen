@@ -38,7 +38,7 @@ package ldbc.snb.datagen.generator.generators.textgenerators;
 import ldbc.snb.datagen.DatagenParams;
 import ldbc.snb.datagen.dictionary.Dictionaries;
 import ldbc.snb.datagen.dictionary.TagDictionary;
-import ldbc.snb.datagen.entities.dynamic.person.Person.PersonSummary;
+import ldbc.snb.datagen.entities.dynamic.person.Person;
 
 import java.util.Properties;
 import java.util.Random;
@@ -56,7 +56,7 @@ public class LdbcSnbTextGenerator extends TextGenerator {
     }
 
     @Override
-    public String generateText(PersonSummary member, TreeSet<Integer> tags, Properties prop) {
+    public String generateText(Person member, TreeSet<Integer> tags, Properties prop) {
         String content = "";
         if (prop.getProperty("type").equals("post")) {
 

@@ -112,7 +112,7 @@ public class PersonActivityGenerator {
 
         // generate wall posts
         ForumMembership personMembership = new ForumMembership(wall.id(),
-                                                               wall.creationDate() + DatagenParams.deltaTime, new Person.PersonSummary(person)
+                                                               wall.creationDate() + DatagenParams.deltaTime, new Person(person)
         );
         List<ForumMembership> fakeMembers = new ArrayList<>();
         fakeMembers.add(personMembership);
@@ -163,7 +163,7 @@ public class PersonActivityGenerator {
             }
 
             ForumMembership personMembership = new ForumMembership(album.id(),
-                                                                   album.creationDate() + DatagenParams.deltaTime, new Person.PersonSummary(person)
+                                                                   album.creationDate() + DatagenParams.deltaTime, new Person(person)
             );
             List<ForumMembership> fakeMembers = new ArrayList<>();
             fakeMembers.add(personMembership);

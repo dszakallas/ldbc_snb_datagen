@@ -37,7 +37,7 @@ package ldbc.snb.datagen.entities.dynamic.messages;
 
 import ldbc.snb.datagen.DatagenParams;
 import ldbc.snb.datagen.entities.dynamic.person.IP;
-import ldbc.snb.datagen.entities.dynamic.person.Person.PersonSummary;
+import ldbc.snb.datagen.entities.dynamic.person.Person;
 
 import java.util.TreeSet;
 
@@ -45,7 +45,7 @@ abstract public class Message {
 
     private long messageId_;
     private long creationDate_;
-    private PersonSummary author_;
+    private Person author_;
     private long forumId_;
     private String content_;
     private TreeSet<Integer> tags_;
@@ -60,7 +60,7 @@ abstract public class Message {
 
     public Message(long messageId,
                    long creationDate,
-                   PersonSummary author,
+                   Person author,
                    long forumId,
                    String content,
                    TreeSet<Integer> tags,
@@ -72,7 +72,7 @@ abstract public class Message {
         assert ((author.creationDate() + DatagenParams.deltaTime) <= creationDate);
         messageId_ = messageId;
         creationDate_ = creationDate;
-        author_ = new PersonSummary(author);
+        author_ = new Person(author);
         forumId_ = forumId;
         content_ = content;
         tags_ = new TreeSet<>(tags);
@@ -83,7 +83,7 @@ abstract public class Message {
 
     public void initialize(long messageId,
                            long creationDate,
-                           PersonSummary author,
+                           Person author,
                            long forumId,
                            String content,
                            TreeSet<Integer> tags,
@@ -93,7 +93,7 @@ abstract public class Message {
     ) {
         messageId_ = messageId;
         creationDate_ = creationDate;
-        author_ = new PersonSummary(author);
+        author_ = new Person(author);
         forumId_ = forumId;
         content_ = content;
         tags_.clear();
@@ -119,7 +119,7 @@ abstract public class Message {
         creationDate_ = date;
     }
 
-    public PersonSummary author() {
+    public Person author() {
         return author_;
     }
 

@@ -37,7 +37,7 @@ package ldbc.snb.datagen.generator.generators.textgenerators;
 
 import ldbc.snb.datagen.DatagenParams;
 import ldbc.snb.datagen.dictionary.TagDictionary;
-import ldbc.snb.datagen.entities.dynamic.person.Person.PersonSummary;
+import ldbc.snb.datagen.entities.dynamic.person.Person;
 import ldbc.snb.datagen.util.DistributionKey;
 
 import java.util.Properties;
@@ -69,7 +69,7 @@ public class TweetGenerator extends TextGenerator {
     }
 
     @Override
-    public String generateText(PersonSummary member, TreeSet<Integer> tags, Properties prop) {
+    public String generateText(Person member, TreeSet<Integer> tags, Properties prop) {
         StringBuffer content = null;
         // determine the number of sentences
         Double numsentences = Double.valueOf(lengthtweet.nextDouble(this.random));

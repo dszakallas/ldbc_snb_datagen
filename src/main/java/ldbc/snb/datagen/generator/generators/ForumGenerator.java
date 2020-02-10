@@ -58,7 +58,7 @@ public class ForumGenerator {
         int language = randomFarm.get(RandomGeneratorFarm.Aspect.LANGUAGE).nextInt(person.languages().size());
         Forum forum = new Forum(SN.formId(SN.composeId(forumId, person.creationDate() + DatagenParams.deltaTime)),
                                 person.creationDate() + DatagenParams.deltaTime,
-                                new Person.PersonSummary(person),
+                                new Person(person),
                                 StringUtils.clampString("Wall of " + person.firstName() + " " + person.lastName(), 256),
                                 person.cityId(),
                                 language
@@ -97,7 +97,7 @@ public class ForumGenerator {
 
         Forum forum = new Forum(SN.formId(SN.composeId(forumId, date)),
                                 date,
-                                new Person.PersonSummary(person),
+                                new Person(person),
                                 StringUtils.clampString("Group for " + Dictionaries.tags.getName(interestId)
                                                                                         .replace("\"", "\\\"") + " in " + Dictionaries.places
                                         .getPlaceName(person.cityId()), 256),
@@ -143,7 +143,7 @@ public class ForumGenerator {
                                                                  .creationDate()) + DatagenParams.deltaTime);
                     assert forum
                             .creationDate() + DatagenParams.deltaTime <= date : "Forum creation date larger than membership date for block based members";
-                    forum.addMember(new ForumMembership(forum.id(), date, new Person.PersonSummary(member)));
+                    forum.addMember(new ForumMembership(forum.id(), date, new Person(member)));
                     added.add(member.accountId());
                 }
             }
@@ -158,7 +158,7 @@ public class ForumGenerator {
         int language = randomFarm.get(RandomGeneratorFarm.Aspect.LANGUAGE).nextInt(person.languages().size());
         Forum forum = new Forum(SN.formId(SN.composeId(forumId, date)),
                                 date,
-                                new Person.PersonSummary(person),
+                                new Person(person),
                                 StringUtils.clampString("Album " + numAlbum + " of " + person.firstName() + " " + person
                                         .lastName(), 256),
                                 person.cityId(),
