@@ -27,7 +27,8 @@ object model {
     ) extends Entity
 
     final case class Attr(dataset: DataFrame, isStatic: Boolean, ref: String) extends Entity
-
+  }
+  object EntityLens {
     private val datasetLens = lens[Entity].dataset
     private val isStaticLens = lens[Entity].isStatic
 
@@ -43,4 +44,5 @@ object model {
     case object Day extends BatchPeriod
     case object Month extends BatchPeriod
   }
+
 }
